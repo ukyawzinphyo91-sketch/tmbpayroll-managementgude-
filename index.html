@@ -194,6 +194,17 @@ input.fld{width:100%;color:#eef2fa;font-family:inherit;outline:none}input.fld::p
 select.fld{appearance:none;color:#eef2fa;font-family:inherit;width:100%}
 .mi,.bi2{background:transparent;border:0;color:inherit;font:inherit;font-weight:600;font-size:19px;width:100%;outline:none;padding:0}.bi2{width:150px;font-size:25px;border-bottom:1px dashed #4b5b78}
 .shr{right:50px}.err{color:#e0524f}
+/* Telegram-native presentation: use the real viewport instead of nesting a phone mockup. */
+body.tg-live{padding:0!important;gap:0;align-items:stretch;justify-content:stretch;overflow:hidden;background:var(--tg-bg,#0a1120);color:var(--tg-text,#eef2fa)}
+body.tg-live .phone{--bg:var(--tg-bg,#0a1120);--cd:var(--tg-secondary,#1a2845);--cd2:var(--tg-secondary,#141f38);--t:var(--tg-text,#eef2fa);--m:var(--tg-hint,#9db0cb);--gr:var(--tg-button,#17803f);--gt:var(--tg-button,#2fc27b);width:100%;height:var(--tg-vh,100dvh);min-height:0;max-width:none;border:0;border-radius:0;box-shadow:none}
+body.tg-live #sb,body.tg-live .rst,body.tg-live .andnav,body.tg-live .hind{display:none!important}
+body.tg-live .top{padding-top:calc(14px + env(safe-area-inset-top,0px))}
+body.tg-live #scr{-webkit-overflow-scrolling:touch;scrollbar-width:none}
+body.tg-live #bot .tabbar{padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+body.tg-live .btn,body.tg-live .pbtn,body.tg-live .hc{background:var(--tg-button,#17803f);color:var(--tg-button-text,#fff)}
+body.tg-live :is(.btn,.pbtn,.act,.pay,.opt,.bc,.bl,.card.row){touch-action:manipulation}
+body.tg-live :focus-visible{outline:2px solid var(--tg-button,#2fc27b);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){body.tg-live *,body.tg-live *::before,body.tg-live *::after{animation-duration:.01ms!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
@@ -275,7 +286,9 @@ function clearProgress(){try{IN_TG&&TWA.CloudStorage?TWA.CloudStorage.removeItem
 function loadProgress(cb){try{if(IN_TG&&TWA.CloudStorage)TWA.CloudStorage.getItem(CK,(err,v)=>{if(err||!v)return cb(null);try{cb(JSON.parse(v))}catch(e){cb(null)}});else{const v=localStorage.getItem(CK);cb(v?JSON.parse(v):null)}}catch(e){cb(null)}}
 function syncBackButton(){if(!TWA)return;try{scr==="login"?TWA.BackButton.hide():TWA.BackButton.show();}catch(e){}}
 function goBack(){if(scr==="edit"&&S.snap){const i=S.emps.findIndex(e=>e.id===S.snap.id);if(i>=0)S.emps[i]=S.snap;S.snap=null}if(scr==="login"){if(TWA)try{TWA.close()}catch(e){}return}scr=PARENT[scr]||"login";render();saveProgress();}
-if(TWA){try{TWA.ready();TWA.expand();try{TWA.setHeaderColor("#0a1120");TWA.setBackgroundColor("#070c16");TWA.disableVerticalSwipes()}catch(e){}TWA.BackButton.onClick(goBack);}catch(e){}}
+function applyTelegramTheme(){if(!TWA)return;const p=TWA.themeParams||{},root=document.documentElement;[["--tg-bg",p.bg_color],["--tg-secondary",p.secondary_bg_color],["--tg-text",p.text_color],["--tg-hint",p.hint_color],["--tg-button",p.button_color],["--tg-button-text",p.button_text_color]].forEach(([k,v])=>{if(v)root.style.setProperty(k,v)});try{TWA.setHeaderColor(p.header_bg_color||p.bg_color||"#0a1120");TWA.setBackgroundColor(p.secondary_bg_color||p.bg_color||"#070c16")}catch(e){}}
+function syncTelegramViewport(){if(TWA&&Number.isFinite(TWA.viewportHeight))document.documentElement.style.setProperty("--tg-vh",TWA.viewportHeight+"px")}
+if(IN_TG){document.body.classList.add("tg-live");try{TWA.ready();TWA.expand();applyTelegramTheme();syncTelegramViewport();if(TWA.onEvent){TWA.onEvent("themeChanged",applyTelegramTheme);TWA.onEvent("viewportChanged",syncTelegramViewport)}TWA.disableVerticalSwipes();TWA.BackButton.onClick(goBack);}catch(e){}}
 
 /* ───────── icons ───────── */
 const IC={
