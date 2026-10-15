@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="utf-8">
+<meta name="theme-color" content="#0a1120">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TMB Payroll Management – Interactive Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Noto+Sans+Myanmar:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--pg:#e6ecf5;--pg2:#d5deec;--tx:#10243f;--mu:#5b6b82;--card:#ffffff;--ln:#cfd9e8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--pg:#070c16;--pg2:#0b1324;--tx:#e6edf7;--mu:#8fa1ba;--card:#101a2e;--ln:#22314d}}
+:root[data-theme="dark"]{--pg:#070c16;--pg2:#0b1324;--tx:#e6edf7;--mu:#8fa1ba;--card:#101a2e;--ln:#22314d}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(1200px 700px at 50% 0%,var(--pg2),var(--pg));color:var(--tx);font-family:"Figtree","Noto Sans Myanmar","Padauk",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;gap:44px;padding:16px;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+.my{font-family:"Noto Sans Myanmar","Padauk","Figtree",system-ui,sans-serif}
+
+/* ───────── Phone shell ───────── */
+.phone{--bg:#0a1120;--cd:#1a2845;--cd2:#141f38;--ln:#263759;--t:#eef2fa;--m:#9db0cb;--gr:#17803f;--gt:#2fc27b;--rd:#e0524f;--amb:#ffb020;
+ position:relative;width:404px;height:min(852px,calc(100dvh - 32px));min-height:600px;background:var(--bg);color:var(--t);border-radius:46px;border:10px solid #04070d;
+ box-shadow:0 0 0 2px #1a2233,0 40px 80px -24px rgba(0,0,0,.65);overflow:hidden;display:flex;flex-direction:column;font-size:15px;line-height:1.35;flex:none;isolation:isolate}
+.phone.ios{--bg:#08142a}
+.rst{position:absolute;top:9px;right:14px;z-index:5;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#eef2fa;font-size:15px;line-height:1;display:grid;place-items:center;cursor:pointer}
+.rst:hover{background:rgba(255,255,255,.26)}
+[data-n]{cursor:pointer}
+.sb{position:relative;flex:none;display:flex;align-items:center;justify-content:space-between;height:40px;padding:6px 22px 0;font-weight:600;font-size:14px;z-index:3;background:var(--bg)}
+.phone.ios .sb{height:50px;padding-top:12px}
+.isl{position:absolute;left:50%;top:10px;transform:translateX(-50%);width:106px;height:30px;border-radius:20px;background:#000}
+.ri{display:flex;align-items:center;gap:6px}.sg{display:inline-flex;align-items:flex-end;gap:1px}.sg sup{font-size:7px;font-weight:700;line-height:1;margin-right:1px;position:relative;top:-6px}
+.bat{background:#e9edf4;color:#0a1120;border-radius:6px;padding:0 5px;font-size:11px;font-weight:800;line-height:15px;height:15px;min-width:22px;text-align:center}
+#scr{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;scrollbar-width:none;overscroll-behavior:contain}
+#scr::-webkit-scrollbar{display:none}
+#scr.fade>*{animation:fi .28s ease-out}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}}
+.pad{padding:14px 16px 24px}
+.ic{display:block;flex:none}
+.sub{color:var(--m);font-size:14px}
+.cap{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:#c3cfe3;font-weight:500}
+
+/* bottom bars */
+#bot{flex:none;position:relative;z-index:3}
+.andnav{height:46px;background:#e8e9ee;color:#575b66;display:flex;justify-content:space-around;align-items:center}
+.andnav span{width:70px;display:grid;place-items:center}
+.hind{height:22px;background:var(--bg);display:grid;place-items:center}.hind i{width:128px;height:5px;border-radius:9px;background:#d9dfea;opacity:.9}
+.tabbar{display:flex;justify-content:space-around;align-items:flex-end;padding:10px 4px 2px;background:#08142a;border-top:1px solid #16315a}
+.tab{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:13px;color:#e6ecf6;min-width:66px;padding:2px 4px;border-radius:12px}
+.tab.on{color:var(--gt)}
+.tab.home{margin-top:-30px}.hc{width:58px;height:58px;border-radius:50%;background:#12a05a;border:4px solid #08142a;display:grid;place-items:center;color:#fff;box-shadow:0 6px 18px rgba(18,160,90,.35)}
+
+.tm{display:inline-flex;align-items:center;gap:7px}.tg{width:19px;height:19px;border-radius:6px;background:#2a9fd8;display:grid;place-items:center}
+.tabbar.and{background:#0a1120;border-top:1px solid #1c2a44;padding:8px 2px 4px}.tabbar.and .tab{font-size:13px;letter-spacing:-.1px;color:#e6ecf6;min-width:0;flex:1}.tabbar.and .tab.home{margin-top:-30px}
+.tabbar.and .hc{background:#17803f;border-color:#0a1120;box-shadow:none}.tab.hot{color:#fff;font-weight:700}
+.tab span{white-space:nowrap}
+.hh{display:flex;align-items:center;gap:12px}.hh .t{flex:1;min-width:0}.hh .g{font-size:19px;color:#e9eef8;line-height:1.1}.hh svg,.tip svg,.tb2 svg{flex:none}.hh h1{margin:2px 0 0;white-space:nowrap;font-size:26px;font-weight:600;line-height:1.1}
+.bellb{position:relative;width:48px;height:48px;border-radius:15px;background:#121f38;border:1px solid #2a3c60;display:grid;place-items:center;color:#eef2fa;flex:none}
+.bellb i{position:absolute;top:-9px;right:-10px;background:#e8433f;color:#fff;font-style:normal;font-size:12px;font-weight:700;border-radius:99px;padding:2px 7px;border:2px solid #0a1120}
+.tb2{position:relative;margin-top:18px;border-radius:22px;padding:18px 18px 20px;background:linear-gradient(135deg,#1b3a37,#1d2e4e 70%);border:1px solid #2b4560;overflow:hidden}
+.tb2 .wm{position:absolute;right:-14px;top:-18px;width:130px;height:130px;border-radius:50%;border:1px dashed rgba(255,255,255,.18);display:grid;place-items:center;opacity:.5}
+.tb2 .lb2{font-size:17px;color:#e9eef8;display:flex;justify-content:space-between;align-items:center;position:relative}
+.tb2 .bigv{font-size:30px;font-weight:700;margin:14px 0 20px;letter-spacing:-.3px;line-height:1.1;position:relative;white-space:nowrap}
+.acts{display:grid;grid-template-columns:repeat(3,1fr);row-gap:16px;text-align:center}
+.acts div{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:15.5px;color:#e9eef8}
+.acts .ti{width:47px;height:47px;border-radius:14px;background:rgba(255,255,255,.15);display:grid;place-items:center;color:#f1f5fb}
+.tb2 hr{border:0;border-top:1px solid rgba(255,255,255,.14);margin:16px 6px}
+.tip{display:flex;gap:12px;align-items:center;margin-top:14px;border:1px solid #14403a;background:#0e2a29;border-radius:16px;padding:14px;font-size:17px;line-height:1.3;color:#eef2fa}
+.tip b{color:#2fc27b;font-weight:500}
+/* top bar of sub-pages */
+.top{position:sticky;top:0;z-index:2;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:14px 18px;border-bottom:1px solid #1b2a47;background:var(--bg);font-weight:600;font-size:18px}
+.top .tl{justify-self:start;font-weight:400;color:#dfe6f3}.top .tl.g{color:#2a9a5a}
+.top .tr{justify-self:end;font-weight:600;color:#4b5b78;padding:2px 6px;border-radius:8px}.top .tr.on{color:var(--gt)}
+.phead{display:flex;align-items:center;gap:14px;padding:6px 18px 6px}
+.phead .bk{color:#2a9a5a}.phead h2{margin:0;font-size:27px;font-weight:600;line-height:1.1}.phead .sub{font-size:16px;color:#cdd7e8}
+.pbtn{margin-left:auto;width:38px;height:38px;border-radius:50%;background:#16784a;display:grid;place-items:center;color:#e9fff3}
+
+/* generic fields */
+.lbl{font-size:13px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:#e9eef8;margin:20px 0 6px}
+.lbl.s{font-size:12.5px;margin:14px 0 6px;letter-spacing:.06em}
+.lbl.red{color:#e0524f}.lbl.grn{color:#2fc27b}
+.hint{color:#c9d3e6;font-size:15px;margin:0 0 12px;line-height:1.4}
+.fld{background:#1c2b48;border:1px solid rgba(255,255,255,.045);border-radius:12px;padding:0 16px;height:54px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:17px;margin-bottom:2px}
+.fld.ph{color:#b9c6dd}.fld.sel .ell{max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fld .cur-t{color:#d6e0f1;font-size:15px;margin-right:10px}.fld .v{font-weight:600;font-size:19px;margin-right:auto}
+.money{justify-content:flex-start}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sec{font-size:14px;letter-spacing:.08em;font-weight:600;text-transform:uppercase;margin:24px 0 0;color:#f1f5fc}
+.card{background:var(--cd);border:1px solid #2a3c60;border-radius:18px;padding:16px}
+.card.row{display:flex;align-items:center;gap:14px;margin-bottom:14px;padding:15px 16px}
+.card.row .mid{flex:1;min-width:0}.card.row>.ic:last-child{color:#cfd9ea}
+.big2{font-size:20px;font-weight:600;line-height:1.2;margin:3px 0 2px}
+.ico{width:44px;height:44px;border-radius:50%;background:#12302f;color:#1f8a58;display:grid;place-items:center;flex:none}
+.ico2{width:30px;height:30px;color:#fff;display:grid;place-items:center;flex:none}
+.bal{display:flex;justify-content:space-between;gap:10px;margin:8px 0 14px;padding:18px 16px}
+.bal .l{max-width:150px}.bal .amt{font-size:25px;font-weight:600;line-height:1.25;margin:5px 0 6px}
+.bal .rt{text-align:right;padding-top:46px}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:99px;background:#10343a;color:#2fb872;font-size:13px;padding:6px 12px;white-space:nowrap}
+.pr{margin-top:8px;font-size:12px;color:#2fc27b}
+.eh{display:flex;justify-content:space-between;align-items:center;margin:22px 0 10px}.eh b{font-size:20px;font-weight:600}.eh .add{color:var(--gt);font-weight:600;font-size:17px;padding:2px 6px;border-radius:8px}
+.ecard{background:var(--cd);border:1px solid #2a3c60;border-radius:18px;margin-bottom:12px;overflow:visible}
+.erow{display:flex;align-items:center;gap:10px;padding:16px 14px 14px}
+.av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:17px;flex:none;background:#12302f;color:#2fc27b}
+.av.x{background:#3a1b24;color:#e0524f}.av.g{background:#10241f;color:#1f9d62;font-size:15px;opacity:.9}
+.emid{flex:1;min-width:0}.nm{display:flex;align-items:center;gap:6px;min-width:0}.nm b{font-size:18px;font-weight:600;flex:none;max-width:100%;white-space:nowrap}.nm .tag{flex:0 1 auto;overflow:hidden;text-overflow:ellipsis}
+.tag{font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:99px;background:#0f3a33;color:#2fc27b;white-space:nowrap}.tag.x{background:#4a1f26;color:#e0524f}
+.em{color:#d3dcec;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.eam{text-align:right;display:flex;flex-direction:column;align-items:flex-end;flex:none;max-width:52%}.eam b{font-size:17px;font-weight:600;white-space:nowrap}.eam small{font-size:12px;color:#c3cfe3;white-space:nowrap;margin-top:2px}
+.edit{display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;border-top:1px solid #2a3c60;font-size:16.5px;border-radius:0 0 18px 18px}
+
+/* business (iOS) */
+.biz .pad{padding:8px 16px 18px}
+.bh{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.bh h1{margin:0;font-size:32px;font-weight:700;line-height:1.1}.bh .sub{font-size:20px;line-height:1.2;margin-top:6px;color:#b5c3dc;max-width:200px}
+.sel2{display:flex;align-items:center;gap:8px;border:1px solid #1f4a85;background:rgba(22,52,96,.55);border-radius:14px;padding:10px 13px;font-size:17px;font-weight:600}
+.act{display:inline-flex;align-items:center;gap:9px;border:1px solid #14754b;background:rgba(14,90,60,.38);color:#27d083;border-radius:99px;padding:8px 14px;font-size:16px;font-weight:600;margin:14px 0 14px}
+.bg2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.bc{position:relative;text-align:left;background:linear-gradient(160deg,rgba(23,58,108,.62),rgba(13,36,72,.62));border:1px solid #1f4a85;border-radius:22px;padding:16px;min-height:196px;color:#fff}
+.bc .ar{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:1px solid currentColor;display:grid;place-items:center}
+.bc .bi{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;margin-bottom:14px}
+.bc b{display:block;font-size:19px;font-weight:600;line-height:1.25}.bc .vm{font-size:17px;color:#b5c3dc;margin-top:6px}.bc .tmc{font-size:22px;font-weight:700;margin-top:6px;line-height:1.25}
+.bl{display:flex;align-items:center;gap:14px;background:linear-gradient(160deg,rgba(23,58,108,.55),rgba(13,36,72,.55));border:1px solid #1f4a85;border-radius:20px;padding:16px;margin-top:14px;text-align:left;width:100%;color:#fff}
+.bl .bi{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;flex:none}.bl .mid{flex:1;min-width:0}.bl b{font-size:19px;font-weight:600;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bl .s{font-size:15.5px;color:#b5c3dc;line-height:1.3}
+.bl .rg{text-align:right;font-weight:700;font-size:18px;white-space:nowrap;flex:none}.bl .rg i{display:block;width:9px;height:9px;border-radius:50%;background:#1ed37b;margin:8px 4px 0 auto}
+
+/* login */
+.lg{text-align:center;padding:18px 20px}.logo{width:104px;height:104px;border-radius:30px;background:#14573a;display:grid;place-items:center;font-size:36px;font-weight:700;margin:26px auto 22px}
+.lg h1{margin:0;font-size:26px}.lg .sub{font-size:17px;margin:8px 0 24px}
+.seg{display:flex;background:var(--cd);border:1px solid var(--ln);border-radius:14px;padding:5px;margin-bottom:16px}.seg span{flex:1;padding:11px;border-radius:10px;color:var(--m)}.seg .on{background:#233352;color:var(--t)}
+.lg .card{text-align:left;padding:18px}.lg .lbl{margin:0 0 8px}
+.btn{display:block;width:100%;border:0;border-radius:14px;background:var(--gr);color:#fff;font-weight:700;padding:15px;font-size:17px;text-align:center}
+.lg .btn{margin-top:14px;position:relative}
+
+/* net pay + schedule + manual */
+.net{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#0b2a29;border:1px solid #15403a;border-radius:14px;padding:16px;margin:16px 0 4px}
+.net .l{color:#2fc27b;font-size:12px;letter-spacing:.07em;text-transform:uppercase;font-weight:600;max-width:150px}.net .l div{text-transform:none;letter-spacing:0;font-size:14px;line-height:1.3;font-weight:400}.net .l .r{color:#e0524f}
+.net .l .g{color:#2fc27b}
+.net b{color:#2fd488;font-size:24px;font-weight:700;white-space:nowrap}
+.ov{color:#1fae6a;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:500;margin:0 0 6px}
+.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:6px}.chips span{text-align:center;border:1px solid #223455;border-radius:12px;padding:13px 4px;font-size:16.5px;color:#eef2fa;background:rgba(255,255,255,.015)}.chips .on{background:#17803f;border-color:#17803f;color:#fff}
+.opt{background:#1c2b48;border-radius:12px;padding:16px 18px;margin-bottom:10px;font-size:17px}.opt.on{background:#17803f}
+.prev{display:flex;align-items:flex-start;gap:12px;margin-top:20px;background:#0b2724;border:1px solid #11332f;border-radius:14px;padding:16px;color:#2a9a63}.prev b{display:block;font-size:18px;font-weight:500}.prev small{font-size:14px}
+.sc2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.sc2 .c{background:#1a2845;border:1px solid #2a3c60;border-radius:14px;padding:11px 8px;text-align:center}.sc2 .c .cap{font-size:12.5px}.sc2 .c b{font-size:17px;font-weight:600;white-space:nowrap}
+.pms{margin-top:12px;background:#1a2845;border:1px solid #2a3c60;border-radius:14px;padding:12px 14px;display:flex;gap:10px;color:#2a9a63}.pms>div{color:#e9eef8}.pms b{font-size:18px;font-weight:600;display:block}.pms span{font-size:15px;color:#d3dcec;line-height:1.35}
+.selrow{display:flex;justify-content:space-between;align-items:center;margin:16px 0 12px;font-size:17px}.selrow .a{color:#2a9a5a;margin-right:10px}
+.ecard2{border:1px solid #2a3c60;border-radius:16px;padding:14px 16px;margin:6px 0 22px;background:rgba(255,255,255,.012)}
+.er{display:flex;align-items:center;gap:12px}.cb{width:24px;height:24px;border-radius:6px;background:#17803f;display:grid;place-items:center;color:#fff;flex:none}
+.er .av{width:38px;height:38px;font-size:13px;background:#10241f;color:#1f9d62}.er b{font-size:19px;font-weight:600}.er small{display:block;color:#d3dcec;font-size:14.5px}
+.ecard2 .cap{margin-top:16px;font-size:13.5px;letter-spacing:.06em;padding:0 0 0 0;display:block}.ecard2 .am{font-size:21px;font-weight:700;margin:6px 0 4px}.ecard2 .fee{font-size:14.5px;color:#d3dcec}
+.skip{border:1px solid #223455;border-radius:12px;padding:13px 14px;display:flex;justify-content:space-between;color:#9db0cb;margin-top:8px}
+.pay{margin-top:24px;display:flex;align-items:center;justify-content:center;gap:10px;background:#17803f;border-radius:14px;padding:17px;font-size:19px;font-weight:600;color:#fff}
+
+/* ───────── Guide: yellow dot (strictly sequential) ───────── */
+.cur{position:relative;cursor:pointer;outline:2px solid rgba(255,176,32,.6);outline-offset:3px}
+.cur::after{content:"";position:absolute;top:-8px;right:-8px;width:16px;height:16px;border-radius:50%;background:var(--amb,#ffb020);border:2.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.45);animation:pl 1.5s infinite;pointer-events:none;z-index:6}
+@keyframes pl{0%{box-shadow:0 0 0 0 rgba(255,176,32,.75)}70%,100%{box-shadow:0 0 0 12px rgba(255,176,32,0)}}
+.cur.shake{animation:sk .38s}
+@keyframes sk{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+.tab.cur{outline-offset:1px}
+.tab.cur::after{top:-4px;right:4px}
+@media (prefers-reduced-motion:reduce){.cur::after{animation:none}.cur.shake{animation:none}#scr.fade>*{animation:none}.gc{animation:none!important}}
+
+#sh{position:absolute;inset:0;display:none;align-items:flex-end;z-index:20}#sh.on{display:flex}
+.dim{position:absolute;inset:0;background:rgba(2,6,14,.5)}
+.gc{position:relative;width:100%;background:#f7f9fd;color:#14213a;border-radius:26px 26px 0 0;padding:20px 20px 22px;box-shadow:0 -12px 40px rgba(0,0,0,.35);animation:up .26s ease-out;font-family:"Noto Sans Myanmar","Padauk","Figtree",system-ui,sans-serif}
+@keyframes up{from{transform:translateY(46px);opacity:0}}
+.gc .bd{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.gc small{display:inline-block;background:#fff0cc;color:#7a4f00;border-radius:99px;padding:3px 11px;font-weight:700;font-size:12px}
+.gc em{font-style:normal;font-size:12px;font-weight:700;color:#6b7a93;font-family:"Figtree",sans-serif}
+.gc h3{margin:6px 0 4px;font-size:18px;line-height:1.5}
+.gc p{margin:0 0 16px;font-size:14.5px;line-height:1.95;color:#33425a}
+.gc .btn{margin:0;font-family:inherit}
+.gc .btn.alt{background:#fff;color:#17803f;border:1.5px solid #17803f;margin-top:10px}
+#tt{position:absolute;left:16px;right:16px;top:64px;border-radius:12px;padding:12px 14px;font-size:14px;text-align:center;z-index:30;display:none;font-weight:700;font-family:"Noto Sans Myanmar","Figtree",sans-serif;line-height:1.7;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+#tt.ok{background:#e4f8ec;color:#0d5a31}#tt.hint{background:#fff3d6;color:#6b4300}
+
+/* side panel */
+.side{width:268px;flex:none;color:var(--tx)}
+.side h1{font-size:15px;margin:0 0 4px;letter-spacing:.02em}.side .sm{color:var(--mu);font-size:13px;line-height:1.9}
+.side .pb{height:6px;border-radius:9px;background:var(--ln);margin:14px 0 6px;overflow:hidden}.side .pb i{display:block;height:100%;background:linear-gradient(90deg,#17803f,#35c47c);width:0;transition:width .35s}
+.side .cnt{font-size:13px;color:var(--mu);margin-bottom:14px;font-weight:600}
+.side ol{list-style:none;padding:0;margin:0}.side li{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;color:var(--mu);margin-bottom:4px;font-size:14.5px;font-family:"Noto Sans Myanmar","Figtree",sans-serif;line-height:1.6}
+.side li i{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--ln);display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:700;flex:none}
+.side li.on{background:#17803f;color:#fff;font-weight:700}.side li.on i{border-color:#fff}
+.side li.done{color:var(--tx)}.side li.done i{background:#17803f;border-color:#17803f;color:#fff}
+.side .rs{margin-top:14px;width:100%;border:1px solid var(--ln);background:transparent;border-radius:12px;padding:11px;font-size:14px;font-family:"Noto Sans Myanmar","Figtree",sans-serif;color:var(--tx)}
+.side .rs:hover{border-color:#17803f}
+.mini{display:none}
+@media (max-width:940px){.side{display:none}body{gap:0;padding-top:52px}.mini{display:block;position:fixed;top:0;left:0;right:0;z-index:50;padding:9px 16px;background:var(--pg2);font-size:12.5px;font-weight:700;color:var(--mu)}.mini .pb{height:4px;border-radius:9px;background:var(--ln);margin-top:6px;overflow:hidden}.mini .pb i{display:block;height:100%;background:#17803f;width:0;transition:width .35s}}
+@media (max-width:480px){
+ body{padding:0;flex-direction:column;align-items:stretch;justify-content:flex-start}
+ body{padding-top:0}.mini{position:static;flex:none}
+ .phone{width:100%;height:auto;flex:1;min-height:0;border:0;border-radius:0;box-shadow:none}
+}
+input.fld{width:100%;color:#eef2fa;font-family:inherit;outline:none}input.fld::placeholder,.mi::placeholder{color:#8fa1ba}input.fld:focus,.fld.money:focus-within{border-color:#2fc27b}
+select.fld{appearance:none;color:#eef2fa;font-family:inherit;width:100%}
+.mi,.bi2{background:transparent;border:0;color:inherit;font:inherit;font-weight:600;font-size:19px;width:100%;outline:none;padding:0}.bi2{width:150px;font-size:25px;border-bottom:1px dashed #4b5b78}
+.shr{right:50px}.err{color:#e0524f}
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+  <div class="sb" id="sb"></div>
+  <button class="rst shr" id="sh2" title="Telegram သို့ ပေးပို့ရန်" aria-label="Share">↗</button><button class="rst" id="rs" title="အစကပြန်စမည်" aria-label="Restart practice">↺</button>
+  <div id="scr"></div>
+  <div id="bot"></div>
+  <div id="tt" role="status"></div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const f2=n=>n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const cash=n=>"Cash "+f2(n);
+const mv=v=>!v?"0.00":v.toLocaleString("en-US");
+const r2=n=>Math.round(n*100)/100;
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const num=v=>{const n=parseFloat(String(v).replace(/[^0-9.]/g,""));return isFinite(n)?Math.min(r2(n),1e9):0};
+const ini=n=>(String(n).trim().split(/\s+/).map(w=>w[0]||"").join("").slice(0,2)||"?").toUpperCase();
+const net=e=>e.ov!==null?e.ov:r2(e.b-e.fi-e.lv+e.ot+e.al);
+const fee=a=>r2(a*.0025);const runAmt=e=>e.run!==null?e.run:net(e);
+const elig=e=>e.saved&&e.status==="Active"&&net(e)>0;
+const MO=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const dd=d=>MO[d.getMonth()]+" "+d.getDate()+", "+d.getFullYear();
+const t0=()=>{const t=new Date();t.setHours(0,0,0,0);return t};
+const away=d=>Math.max(0,Math.ceil((d-t0())/864e5));
+const nxtD=day=>{const t=t0();let d=new Date(t.getFullYear(),t.getMonth(),day);if(d<t)d=new Date(t.getFullYear(),t.getMonth()+1,day);return d};
+const eomD=()=>{const t=t0();let d=new Date(t.getFullYear(),t.getMonth()+1,0);if(d<t)d=new Date(t.getFullYear(),t.getMonth()+2,0);return d};
+const SL={"28":"28th of every month",m0:"End of the month",m1:"Before end of month",m2:"After end of month",f1:"Bi-weekly",f2:"Weekly"};
+const hint=t=>toast(t||"ဒီ demo မှာ ဒီခလုတ်ကို မဖွင့်ထားသေးပါ","hint");
+const E=id=>S.emps.find(e=>e.id===(id||S.cur));
+const tots=()=>{const L=S.emps.filter(e=>elig(e)&&e.sel),sum=r2(L.reduce((t,e)=>t+runAmt(e),0)),fees=r2(L.reduce((t,e)=>t+fee(runAmt(e)),0));return{L,sum,fees,tot:r2(sum+fees)}};
+const LV={netv:()=>cash(net(E())),lfi:()=>"− Fines "+cash(E().fi),llv:()=>"− Leave "+cash(E().lv),lot:()=>"+ OT "+cash(E().ot),lal:()=>"+ Allowance "+cash(E().al),
+ comp:()=>cash(r2(E().b-E().fi-E().lv+E().ot+E().al)),dbit:()=>"Cash "+f2(tots().tot),efee:()=>f2(tots().fees),
+ selc:()=>tots().L.length+" of "+S.emps.filter(elig).length+" selected",paylbl:()=>"Pay "+tots().L.length+" · Cash "+f2(tots().tot),
+ rf:id=>{const a=runAmt(E(id));return "PMS fee "+cash(fee(a))+" · net "+cash(r2(a-fee(a)))}};
+function live(){const sc=$("#scr");sc.querySelectorAll("[data-lv]").forEach(el=>{const f=LV[el.dataset.lv];if(f)el.textContent=f(el.dataset.a)});
+ const sv=sc.querySelector("[data-sv]");if(sv&&E())sv.classList.toggle("on",net(E())>0);const pb=sc.querySelector("[data-pay]");if(pb)pb.style.opacity=tots().L.length?1:.45}
+
+/* ───────── state & navigation graph (free exploration — every live control works, in any order) ───────── */
+let uid=0;
+const mk=o=>Object.assign({id:"e"+(++uid),name:"",email:"",uid:"",status:"Active",pos:"",gender:"",join:"",phone:"",addr:"",dob:"",nid:"",b:0,fi:0,lv:0,ot:0,al:0,ov:null,saved:false,sel:true,run:null},o);
+const fresh=()=>{uid=0;return{emps:[mk({name:"HIII",email:"nn2@g.com",status:"Suspended",b:20000,fi:1000,lv:1000,saved:true})],cur:null,snap:null,f:{email:"",name:"",uid:""},me:"employee@example.com",sch:"28",freq:0,opt:0,bal:14870,last:"",hist:[],hide:false}};
+let S=fresh(),scr="login",lastScr="";
+const PARENT={home:"login",biz:"home",pay:"biz",add:"pay",edit:"pay",sched:"pay",manual:"pay"};
+const A=id=>`data-n="${id}"`;
+const NAV={
+ login:{to:"home"},eye:{act:()=>{S.hide=!S.hide}},biz:{to:"biz"},pm:{to:"pay"},ad:{to:"add"},
+ a5:{act:()=>{const f=S.f,em=f.email.trim().toLowerCase(),id=f.uid.replace(/\s/g,"");
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){hint("Email ပုံစံ မမှန်ပါ (ဥပမာ name@gmail.com)");return false}
+  if(S.emps.some(e=>e.email===em)){hint("ဒီ email နဲ့ ဝန်ထမ်း ရှိပြီးသားပါ");return false}
+  if(id&&!/^\d{10}$/.test(id)){hint("User ID က ဂဏန်း ၁၀ လုံး ဖြစ်ရပါမယ်");return false}
+  const nm=f.name.trim()||em.split("@")[0].replace(/[._]/g," ").replace(/\b\w/g,c=>c.toUpperCase());
+  S.emps.push(mk({name:nm,email:em,uid:id}));S.f={email:"",name:"",uid:""}},toast:"ဝန်ထမ်းကို Active အဖြစ် ထည့်ပြီးပါပြီ ✓",to:"pay"},
+ ed:{act:id=>{S.cur=id;S.snap=JSON.parse(JSON.stringify(E(id)))},to:"edit"},
+ p2:{act:()=>{const e=E();e.status=e.status==="Active"?"Suspended":"Active"}},
+ smp:{act:()=>{Object.assign(E(),{b:10000,fi:100,lv:100,ot:50,al:50})},toast:"နမူနာ တန်ဖိုး ဖြည့်ပြီးပါပြီ",to:"edit"},
+ clr:{act:()=>{Object.assign(E(),{b:0,fi:0,lv:0,ot:0,al:0,ov:null})},toast:"လစာအချက်အလက် ဖျက်ပြီးပါပြီ",to:"edit"},
+ rm:{act:()=>{S.emps=S.emps.filter(e=>e.id!==S.cur);S.snap=null},toast:"ဝန်ထမ်းကို ဖယ်ရှားပြီးပါပြီ",to:"pay"},
+ c6:{act:()=>{const e=E();if(net(e)<=0){hint("Basic salary (သို့) Override ဖြည့်ပြီးမှ သိမ်းပါ");return false}e.saved=true;e.run=null;S.snap=null},toast:"သိမ်းဆည်းပြီးပါပြီ ✓",to:"pay"},
+ s0:{to:"sched"},
+ sub:{act:()=>{S.sch=S.freq?"f"+S.freq:"m"+S.opt},toast:"Payday Schedule သတ်မှတ်ပြီးပါပြီ ✓",to:"pay"},
+ m0:{act:()=>{if(!S.emps.some(elig)){hint("လစာသတ်မှတ်ပြီးသော Active ဝန်ထမ်း အရင်လိုအပ်ပါသည်");return false}},to:"manual"},
+ ms:{act:id=>{const e=E(id);e.sel=!e.sel}},sa:{act:()=>S.emps.forEach(e=>e.sel=true)},sc:{act:()=>S.emps.forEach(e=>e.sel=false)},
+ m4:{act:()=>{const T=tots();if(!T.L.length){hint("ငွေပေးရန် ဝန်ထမ်းတစ်ဦး ရွေးပါ");return false}
+  if(T.L.some(e=>runAmt(e)<=0)){hint("ပမာဏ ၀ ထက်ကြီးရပါမယ်");return false}
+  if(T.tot>S.bal){hint("Dept balance မလုံလောက်ပါ (Cash "+f2(S.bal)+")");return false}
+  S.bal=r2(S.bal-T.tot);S.last="Cash "+f2(T.tot)+" · "+dd(new Date());S.hist.push({d:dd(new Date()),n:T.L.length,t:T.tot});T.L.forEach(e=>e.run=null)},toast:()=>"ငွေပေးချေမှု အောင်မြင်ပါသည် ✓ · "+S.last,to:"pay"}
+};
+[0,1,2].forEach(i=>{NAV["f"+i]={act:()=>{S.freq=i}};NAV["o"+i]={act:()=>{S.opt=i}}});
+
+/* ───────── Telegram Mini App bridge (safe no-op outside Telegram) ───────── */
+const TWA=window.Telegram&&window.Telegram.WebApp;
+function haptic(k){try{TWA&&TWA.HapticFeedback&&TWA.HapticFeedback.notificationOccurred(k==="ok"?"success":"warning");}catch(e){}}
+const CK="tmb_payroll_sandbox_v4",IN_TG=!!(TWA&&TWA.initData);
+function saveProgress(){const d=JSON.stringify({scr,S});try{IN_TG&&TWA.CloudStorage?TWA.CloudStorage.setItem(CK,d,()=>{}):localStorage.setItem(CK,d)}catch(e){}}
+function clearProgress(){try{IN_TG&&TWA.CloudStorage?TWA.CloudStorage.removeItem(CK,()=>{}):localStorage.removeItem(CK)}catch(e){}}
+function loadProgress(cb){try{if(IN_TG&&TWA.CloudStorage)TWA.CloudStorage.getItem(CK,(err,v)=>{if(err||!v)return cb(null);try{cb(JSON.parse(v))}catch(e){cb(null)}});else{const v=localStorage.getItem(CK);cb(v?JSON.parse(v):null)}}catch(e){cb(null)}}
+function syncBackButton(){if(!TWA)return;try{scr==="login"?TWA.BackButton.hide():TWA.BackButton.show();}catch(e){}}
+function goBack(){if(scr==="edit"&&S.snap){const i=S.emps.findIndex(e=>e.id===S.snap.id);if(i>=0)S.emps[i]=S.snap;S.snap=null}if(scr==="login"){if(TWA)try{TWA.close()}catch(e){}return}scr=PARENT[scr]||"login";render();saveProgress();}
+if(TWA){try{TWA.ready();TWA.expand();try{TWA.setHeaderColor("#0a1120");TWA.setBackgroundColor("#070c16");TWA.disableVerticalSwipes()}catch(e){}TWA.BackButton.onClick(goBack);}catch(e){}}
+
+/* ───────── icons ───────── */
+const IC={
+card:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18"/>',
+receipt:'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>',
+home:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
+case:'<rect x="3" y="7" width="18" height="13" rx="3"/><path d="M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M3 13h18"/>',
+user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>',
+store:'<path d="M4 9l1.5-5h13L20 9"/><path d="M4 9a2.5 2.5 0 005 0 2.5 2.5 0 005 0 2.5 2.5 0 005 0"/><path d="M5 12v8h14v-8M10 20v-5h4v5"/>',
+users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5S15.5 16.5 15.5 20"/><circle cx="17" cy="9" r="2.5"/><path d="M17.5 14.5c2.5 0 4 1.5 4 4"/>',
+arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+cash:'<rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v.01M18 15v.01"/>',
+chR:'<path d="M9 6l6 6-6 6"/>',chL:'<path d="M15 6l-6 6 6 6"/>',chD:'<path d="M6 9l6 6 6-6"/>',
+cal:'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+play:'<circle cx="12" cy="12" r="10" fill="currentColor" stroke="none"/><path d="M10 8l6 4-6 4z" fill="#0a1120" stroke="none"/>',
+tri:'<path d="M7 5l12 7-12 7z" fill="currentColor"/>',
+uplus:'<circle cx="10" cy="8" r="3.5"/><path d="M3 20c0-3.5 3-5.5 7-5.5s7 2 7 5.5M19 8v6M16 11h6"/>',
+pen:'<path d="M4 20l1-4L16 5l3 3L8 19z"/>',
+info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.01"/>',
+ck:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+eye:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+bell:'<path d="M6 17V11a6 6 0 0112 0v6l1.5 2h-15z"/><path d="M10 21h4"/>',
+dIn:'<circle cx="12" cy="12" r="10"/><path d="M12 7v9M8 12.5l4 4 4-4"/>',
+dOut:'<circle cx="12" cy="12" r="10"/><path d="M12 17V8M8 11.5l4-4 4 4"/>',
+dGo:'<circle cx="12" cy="12" r="10"/><path d="M7 12h10M13 8l4 4-4 4"/>',
+scan:'<path d="M4 9V6a2 2 0 012-2h3M15 4h3a2 2 0 012 2v3M20 15v3a2 2 0 01-2 2h-3M9 20H6a2 2 0 01-2-2v-3"/>',
+qr:'<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><path d="M14 14h2.5v2.5H14zM18 18h2.5M18 14h2.5M14 19v1.5"/>',
+menu:'<path d="M5 7h14M5 12h14M5 17h14"/>',sq:'<rect x="6" y="6" width="12" height="12" rx="3"/>',bk:'<path d="M15 5l-7 7 7 7"/>'
+};
+const I=(n,s=20,x="")=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ${x}>${IC[n]}</svg>`;
+const BARS='<svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx=".8"/><rect x="4.3" y="5.5" width="3" height="6.5" rx=".8"/><rect x="8.6" y="3" width="3" height="9" rx=".8"/><rect x="12.9" y="0" width="3" height="12" rx=".8"/></svg>';
+const WIFI='<svg width="17" height="13" viewBox="0 0 24 18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M2 6.5a15 15 0 0120 0M5.5 10.5a10 10 0 0113 0M9 14.4a5 5 0 016 0"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>';
+const MASC=(z=44)=>`<svg width="${z}" height="${z}" viewBox="0 0 48 48"><circle cx="24" cy="24" r="23" fill="#0f3a2a" stroke="#1f7a4d" stroke-width="2"/><path d="M24 9c-3 3-9 7-9 15 0 7 4 12 9 12s9-5 9-12c0-8-6-12-9-15z" fill="#8fe04b"/><path d="M24 9c3 2 5 5 6 8-2-1-4-1-6 0z" fill="#c8f56b"/><ellipse cx="20" cy="25" rx="2" ry="2.6" fill="#0b2a1c"/><ellipse cx="28" cy="25" rx="2" ry="2.6" fill="#0b2a1c"/><path d="M21 30q3 3 6 0" stroke="#0b2a1c" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="17" cy="29" r="1.8" fill="#ff9a8a" opacity=".7"/><circle cx="31" cy="29" r="1.8" fill="#ff9a8a" opacity=".7"/></svg>`;
+const TG='<span class="tg"><svg width="11" height="11" viewBox="0 0 24 24" fill="#fff"><path d="M3 11.5L21 4l-3 16-6-4.5-3 3v-5l9-7-11 6z"/></svg></span>';
+const sbar=(dev,t,b,x)=>`<span class="tm">${t}${x?TG:""}</span>${dev==="ios"?'<span class="isl"></span>':""}<span class="ri"><span class="sg"><sup>4G</sup>${BARS}</span><span class="sg"><sup>4G</sup>${BARS}</span>${WIFI}<span class="bat">${b}</span></span>`;
+
+/* ───────── screens (every tappable element is live — no locked single target) ───────── */
+const tabs=(on,and)=>`<div class="tabbar ${and?"and":""}"><div class="tab">${I("card",26)}<span>Accounts</span></div><div class="tab">${I("receipt",26)}<span>Transacti…</span></div><div class="tab home ${on==="home"?"hot":""}" ${on==="home"?"":A("back")}><span class="hc">${I("home",28)}</span><span>Home</span></div><div class="tab ${on==="biz"?"on":""}" ${on==="biz"?"":A("biz")}>${I("case",26)}<span>Business</span></div><div class="tab">${I("user",26)}<span>Profile</span></div></div>`;
+const ANAV=`<div class="andnav"><span>${I("menu",22)}</span><span>${I("sq",22)}</span><span>${I("bk",22)}</span></div>`;
+const money=(v,id)=>`<div class="fld money"><span class="cur-t">Cash</span><span class="v">${v}</span></div>`;
+const SC={
+login:()=>({dev:"ios",time:"1:49",bat:71,bot:'<div class="hind"><i></i></div>',html:`<div class="lg"><div class="logo">TMB</div><h1>The Mountain Bank</h1><p class="sub">Sign in to your account</p><div class="seg"><span class="on">Sign in</span><span>Create account</span></div><div class="card"><div class="lbl">Email</div><input class="fld in" data-f="login" type="email" inputmode="email" autocapitalize="off" value="${esc(S.me)}" placeholder="name@gmail.com"><button class="btn" ${A("login")}>Continue</button></div></div>`}),
+home:()=>({dev:"and",time:"3:37",bat:95,tg:1,bot:tabs("home",1)+ANAV,html:`<div class="pad" style="padding-top:14px"><div class="hh">${MASC(52)}<div class="t"><div class="g">Good day</div><h1>Mountain Bank</h1></div><span class="bellb">${I("bell",24)}<i>9+</i></span></div>
+<div class="tb2"><div class="wm">${MASC(60)}</div><div class="lb2"><span>Total Balance</span><span ${A("eye")} style="padding:4px">${I("eye",22)}</span></div><div class="bigv">${S.hide?"TMC ••••••••":"TMC 7,236,949.90"}</div>
+<div class="acts"><div><span class="ti">${I("dIn",24)}</span>Deposit</div><div><span class="ti">${I("dOut",24)}</span>Withdraw</div><div><span class="ti">${I("dGo",24)}</span>Transfer</div></div><hr>
+<div class="acts"><div><span class="ti">${I("scan",24)}</span>Scan &amp; Pay</div><div><span class="ti">${I("receipt",24)}</span>Pay Bills</div><div><span class="ti">${I("qr",24)}</span>My QR</div></div></div>
+<div class="tip">${MASC(46)}<div><b>Mg Tain:</b> Your balance is looking healthy — consider moving surplus funds into a fixed deposit.</div></div></div>`}),
+biz:()=>({dev:"ios",time:"11:40",bat:67,bot:tabs("biz")+'<div class="hind"><i></i></div>',cls:"biz",html:`<div class="pad"><div class="bh"><div><h1>Business</h1><div class="sub">Merchant &amp; payroll accounts</div></div><div class="sel2">${I("case",20)}<span>Nfbrother</span>${I("chD",18)}</div></div><div class="act">${I("shield",20)}Business Banking Active</div>
+<div class="bg2"><div class="bc"><span class="ar" style="color:#27d083">${I("arrow",18)}</span><div class="bi" style="background:#0f3d33;color:#27d083">${I("store",30)}</div><b>Merchant Portal</b><div class="vm">View merchant</div></div>
+<div class="bc" ${A("pm")}><span class="ar" style="color:#3b8cff">${I("arrow",18)}</span><div class="bi" style="background:#18356b;color:#4d9bff">${I("users",30)}</div><b>Payroll Management</b><div class="tmc">TMC<br>${f2(S.bal)}</div></div></div>
+<div class="bl"><div class="bi" style="background:#232f3d;color:#f2b430">${I("cash",30)}</div><div class="mid"><b>Loan Approvals</b><div class="s">Review employee salary advance requests</div></div>${I("chR",20)}</div>
+<div class="bl"><div class="bi" style="background:#0f3d33;color:#27d083">${I("store",30)}</div><div class="mid"><b>Nfbrothe…</b><div class="s">Merchant Account</div></div><div class="rg">TMC 6,000.00<i></i></div>${I("chR",20)}</div>
+<div class="bl" ${A("pm")}><div class="bi" style="background:#18356b;color:#4d9bff">${I("case",30)}</div><div class="mid"><b>Nfbroth…</b><div class="s">Open payroll</div></div><div class="rg">TMC ${f2(S.bal)}<i></i></div>${I("chR",20)}</div></div>`}),
+pay:()=>{const L=S.emps,act=L.filter(e=>e.status==="Active").length,rd=L.filter(elig),sc=S.sch,nd=sc==="28"?nxtD(28):sc==="m0"?eomD():null;
+ const row=e=>`<div class="ecard"><div class="erow"><div class="av ${e.status==="Suspended"?"x":""}">${esc(ini(e.name))}</div><div class="emid"><div class="nm"><b>${esc(e.name)}</b><span class="tag ${e.status==="Suspended"?"x":""}">${e.status}</span></div><div class="em">${esc(e.email)}</div></div><div class="eam"><b>${cash(e.saved?net(e):0)}</b><small>Basic Salary ${cash(e.saved?e.b:0)}</small><small>Net Pay</small></div></div><div class="edit" ${A("ed:"+e.id)}>${I("pen",17)}<span>Edit / Set Salary</span></div></div>`;
+ const tot=r2(rd.reduce((t,e)=>t+net(e),0));
+ return{dev:"and",time:"12:08",bat:71,bot:"and",html:`<div class="phead"><span class="bk" ${A("back")}>${I("chL",24)}</span><div><h2>Payroll</h2><div class="sub">Nfbrother</div></div><span class="pbtn" ${A("ad")}>${I("uplus",20)}</span></div><div class="pad" style="padding-top:12px">
+<div class="card bal"><div class="l"><div class="cap">Payroll account balance</div><div class="amt">Cash<br><input class="bi2" inputmode="decimal" data-f="bal" value="${S.bal}" aria-label="Payroll account balance"></div><div class="sub" style="color:#cdd7e8">ရိုက်ပြီး ပြင်နိုင်သည်</div></div><div class="rt"><span class="chip">${I("users",14)}${act} active · ${L.length} total</span>${S.last?'<div class="pr">Last run: '+S.last+'</div>':rd.length?'<div class="pr">Cash '+f2(tot)+' payroll</div>':""}</div></div>
+<div class="card row" ${A("s0")}><span class="ico">${I("cal",22)}</span><div class="mid"><div class="cap" style="font-size:11.5px">Payday schedule</div><div class="big2">${SL[sc]}</div><div class="sub">${nd?"Next: "+dd(nd)+" · "+away(nd)+" days away":"Schedule saved"}</div></div>${I("chR",20)}</div>
+<div class="card row" ${A("m0")}><span class="ico2">${I("play",28)}</span><div class="mid"><div class="big2" style="margin:0">Manual Payroll</div><div class="sub" style="color:#d3dcec">${rd.length?rd.length+" employee · "+cash(tot)+" · Manual or auto on payday":"Set salary for active employees first"}</div></div>${I("chR",20)}</div>
+<div class="eh"><b>Employees (${L.length})</b><span class="add" ${A("ad")}>+ Add</span></div>${L.map(row).join("")}
+${S.hist.length?'<div class="eh"><b>Recent payments</b></div>'+S.hist.slice(-3).reverse().map(h=>`<div class="skip"><span>${h.d} · ${h.n} paid</span><span>Cash ${f2(h.t)}</span></div>`).join(""):""}</div>`}},
+add:()=>{const f=S.f,i=(k,ph,x)=>`<input class="fld in" data-f="f:${k}" value="${esc(f[k])}" placeholder="${ph}" ${x||""}>`;
+ return{dev:"and",time:"12:08",bat:71,bot:"and",html:`<div class="top"><span class="tl" ${A("back")}>Cancel</span><span>Add Employee</span><span class="tr on" ${A("a5")}>Add</span></div><div class="pad" style="padding-top:8px">
+<div class="lbl" style="margin-top:12px">Email (Gmail)</div><p class="hint">Enter the email on their TMB Profile. They need an active Current Account to receive salary.</p>${i("email","employee@example.com",'type="email" inputmode="email" autocapitalize="off" autocomplete="off"')}
+<div class="lbl" style="margin-top:22px">Name (optional)</div><p class="hint">Defaults to their TMB profile name if left blank.</p>${i("name","Mai Naing")}
+<div class="lbl" style="margin-top:22px">User ID (optional)</div><p class="hint">Optional cross-check — 10-digit TMB User ID from their Profile.</p>${i("uid","0011122239",'inputmode="numeric" maxlength="12"')}
+<p class="hint" style="margin-top:20px">The employee is added as Active and can receive payroll once salary is set.</p></div>`}},
+edit:()=>{const e=E(),x=(k,ph,a)=>`<input class="fld in" data-f="${k}" value="${esc(e[k])}" placeholder="${ph}" ${a||""}>`,mf=(l,k,c)=>`<div><div class="lbl s ${c||""}">${l}</div><div class="fld money"><span class="cur-t">Cash</span><input class="mi" inputmode="decimal" data-f="${k}" value="${e[k]||""}" placeholder="0.00"></div></div>`;
+ return{dev:"and",time:"12:11",bat:71,bot:"and",html:`<div class="top"><span class="tl" ${A("back")}>Cancel</span><span>Edit Employee</span><span class="tr ${net(e)>0?"on":""}" data-sv ${A("c6")}>Save</span></div><div class="pad" style="padding-top:12px">
+<div class="lbl s" style="margin-top:0">Name</div>${x("name","Full name")}<div class="lbl s">Email</div>${x("email","name@gmail.com",'type="email" inputmode="email" autocapitalize="off"')}
+<div ${A("p2")} style="margin-top:6px"><div class="lbl">Status</div><div class="fld sel"><span>${e.status}</span>${I("chD",20)}</div><p class="hint" style="margin-top:10px">Tap to toggle Active / Suspended. Suspended pauses payroll for this employee.</p></div>
+<div class="sec" style="margin-top:22px">Personal information</div>
+<div class="lbl s">Position / Job title</div>${x("pos","e.g. Senior Accountant")}
+<div class="two"><div><div class="lbl s">Gender</div><select class="fld" data-f="gender">${["","Female","Male","Other"].map(g=>`<option value="${g}" ${e.gender===g?"selected":""}>${g||"— Not specified"}</option>`).join("")}</select></div><div><div class="lbl s">Join date</div>${x("join","YYYY-MM-DD")}</div></div>
+<div class="lbl s">Phone</div>${x("phone","+95 9 xxx xxx",'inputmode="tel"')}<div class="lbl s">Address</div>${x("addr","Street, City, Township")}
+<div class="lbl s">Date of birth</div>${x("dob","YYYY-MM-DD")}<div class="lbl s">National ID</div>${x("nid","9/MaKaNa(N)123456")}
+<div class="sec" style="margin-top:26px">Salary components</div>
+<div class="two" style="margin-top:12px"><div class="opt" ${A("smp")} style="text-align:center;margin:0">နမူနာဖြည့်</div><div class="opt" ${A("clr")} style="text-align:center;margin:0">ဖျက်မည်</div></div>
+${mf("Basic salary","b")}<div class="two">${mf("− Fines","fi","red")}${mf("− Leave","lv","red")}</div><div class="two">${mf("+ OT","ot","grn")}${mf("+ Allowance","al","grn")}</div>
+<div class="net"><div class="l">Net pay per cycle<div class="r" data-lv="lfi">${LV.lfi()}</div><div class="r" data-lv="llv">${LV.llv()}</div><div class="g" data-lv="lot">${LV.lot()}</div><div class="g" data-lv="lal">${LV.lal()}</div></div><b data-lv="netv">${LV.netv()}</b></div>
+<div class="sec" style="margin-top:22px">Final payroll override</div><p class="hint" style="margin:8px 0 12px">Leave blank to use computed net pay. When set, this amount is paid directly.</p>
+<div class="ov">Override amount (computed: <span data-lv="comp">${LV.comp()}</span>)</div><div class="fld money"><span class="cur-t">Cash</span><input class="mi" inputmode="decimal" data-f="ov" value="${e.ov===null?"":e.ov}" placeholder="Leave blank"></div>
+<div class="opt" ${A("rm")} style="text-align:center;color:#e0524f;margin-top:26px">Remove employee</div></div>`}},
+sched:()=>({dev:"and",time:"12:12",bat:71,bot:"and",html:`<div class="top"><span class="tl g" ${A("back")}>Cancel</span><span>Payday Schedule</span><span class="tr on" ${A("sub")}>Submit</span></div><div class="pad" style="padding-top:6px">
+<div><div class="lbl" style="margin-top:14px">Frequency</div><div class="chips">${["Monthly","Bi-weekly","Weekly"].map((c,i)=>`<span class="${S.freq===i?"on":""}" ${A("f"+i)}>${c}</span>`).join("")}</div></div>
+${S.freq===0?`<div><div class="lbl" style="margin-top:22px">Monthly payday</div>${["End of the month","Before end of month","After end of month"].map((c,i)=>`<div class="opt ${S.opt===i?"on":""}" ${A("o"+i)}>${c}</div>`).join("")}</div><p class="hint" style="margin-top:-2px">Saving replaces the fixed day-of-month.</p>`:""}
+<div class="prev">${I("cal",18)}<div><b>${SL[S.freq?"f"+S.freq:"m"+S.opt]}</b>${!S.freq&&S.opt===0?`<small>Next payday: ${dd(eomD())}</small>`:""}</div></div></div>`}),
+manual:()=>{const T=tots(),el=S.emps.filter(elig),sk=S.emps.filter(e=>!elig(e));
+ const card=e=>{const on=e.sel;return `<div class="ecard2"><div class="er"><span class="cb" ${A("ms:"+e.id)} style="${on?"":"background:transparent;border:1.5px solid #4b5b78"}">${on?I("ck",16,'stroke-width="3"'):""}</span><span class="av">${esc(ini(e.name))}</span><div><b>${esc(e.name)}</b><small>Default ${cash(net(e))}</small></div></div><div><span class="cap">Amount this run</span><div class="fld money" style="margin-top:6px"><span class="cur-t">Cash</span><input class="mi" inputmode="decimal" data-f="run:${e.id}" value="${runAmt(e)}"></div><div class="fee" data-lv="rf" data-a="${e.id}">${LV.rf(e.id)}</div></div></div>`};
+ return{dev:"and",time:"12:12",bat:71,bot:"and",html:`<div class="top"><span class="tl" ${A("back")}>Cancel</span><span>Manual Payroll</span><span></span></div><div class="pad" style="padding-top:14px">
+<div class="sc2"><div class="c"><div class="cap">Dept balance</div><b>Cash ${f2(S.bal)}</b></div><div class="c"><div class="cap">Total debit</div><b data-lv="dbit">${LV.dbit()}</b></div></div>
+<div class="pms">${I("info",16)}<div><b>PMS fee 0.25%</b><span>Employer: Cash <span data-lv="efee">${LV.efee()}</span>. Each employee also pays 0.25% of their gross.</span></div></div>
+<div class="selrow"><span data-lv="selc">${LV.selc()}</span><span><span class="a" ${A("sa")}>Select all</span><span ${A("sc")}>Clear</span></span></div>
+<p class="hint">Tick employees to include. Type an amount to change it for this run only.</p>${el.map(card).join("")}
+<b style="font-size:17px;font-weight:600">${sk.length} Skipped</b>${sk.map(e=>`<div class="skip"><span>${esc(e.name)}</span><span>${e.status!=="Active"?e.status:"No salary set"}</span></div>`).join("")}
+<div class="pay" data-pay ${A("m4")} style="${T.L.length?"":"opacity:.45"}">${I("tri",16)}<span data-lv="paylbl">${LV.paylbl()}</span></div></div>`}}
+};
+
+/* ───────── render + input (every [data-n] element is always live) ───────── */
+function render(){
+  if(scr==="edit"&&!E())scr="pay";
+  const sc=SC[scr](),scrEl=$("#scr"),ph=$("#phone"),same=lastScr===scr,y=scrEl.scrollTop;
+  ph.className="phone "+sc.dev+(sc.cls?" "+sc.cls:"");
+  $("#sb").innerHTML=sbar(sc.dev,sc.time,sc.bat,sc.tg);
+  scrEl.classList.toggle("fade",!same);scrEl.innerHTML=sc.html;
+  $("#bot").innerHTML=sc.bot==="and"?ANAV:sc.bot||"";
+  scrEl.scrollTop=same?y:0;lastScr=scr;
+  scrEl.querySelectorAll("[data-n]").forEach(el=>{el.tabIndex=0;el.setAttribute("role","button")});
+  syncBackButton();
+}
+function toast(t,k="ok"){haptic(k==="ok"?"ok":"warn");const x=$("#tt");x.textContent=t;x.className=k;x.style.display="block";clearTimeout(toast.h);toast.h=setTimeout(()=>x.style.display="none",k==="ok"?2400:2200)}
+function reset(){clearProgress();S=fresh();scr="login";lastScr="";$("#tt").style.display="none";render();}
+
+function fire(id){
+  if(id==="back"){goBack();return}
+  const[k,arg]=id.split(":"),n=NAV[k];if(!n)return;
+  if(n.act&&n.act(arg)===false)return;
+  const tx=typeof n.toast==="function"?n.toast(arg):n.toast;if(tx)toast(tx);
+  if(n.to)scr=n.to;
+  render();saveProgress();
+}
+$("#phone").addEventListener("click",e=>{const t=e.target.closest("[data-n]");if(t){fire(t.dataset.n);return}
+ if(e.target.closest(".tab:not(.hot),.acts>div,.bc,.bl,.sel2,.bellb,.seg span:not(.on),.edit"))hint();});
+$("#phone").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.tagName!=="INPUT"&&e.target.closest&&e.target.closest("[data-n]")){e.preventDefault();fire(e.target.closest("[data-n]").dataset.n);}});
+$("#phone").addEventListener("input",e=>{const t=e.target,k=t.dataset&&t.dataset.f;if(!k)return;const v=t.value,[a,b]=k.split(":");
+ if(a==="login")S.me=v;else if(a==="f")S.f[b]=v;else if(a==="bal")S.bal=num(v);
+ else if(a==="run")E(b).run=v.trim()===""?null:num(v);
+ else{const m=E();if(["b","fi","lv","ot","al"].includes(a))m[a]=num(v);else if(a==="ov")m.ov=v.trim()===""?null:num(v);else m[a]=v}
+ live();saveProgress()});
+$("#rs").onclick=reset;
+function share(){const u=location.href.split("#")[0],t="TMB Payroll – Interactive Guide",tl="https://t.me/share/url?url="+encodeURIComponent(u)+"&text="+encodeURIComponent(t);
+ if(IN_TG){try{TWA.openTelegramLink(tl);return}catch(e){}}
+ if(navigator.share){navigator.share({title:t,url:u}).catch(()=>{});return}
+ try{navigator.clipboard.writeText(u);toast("လင့်ခ် copy ကူးပြီးပါပြီ ✓")}catch(e){window.open(tl,"_blank")}}
+$("#sh2").onclick=share;
+
+loadProgress(saved=>{
+  if(saved&&saved.scr&&SC[saved.scr]&&saved.S&&Array.isArray(saved.S.emps)){S=Object.assign(fresh(),saved.S);uid=Math.max(0,...S.emps.map(e=>+String(e.id).slice(1)||0));scr=saved.scr;render();}
+  else{render();}
+});
+</script>
+</body>
+</html>
